@@ -1,0 +1,23 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Query {
+  ports(portNumber: Int): [Port!]!
+  lastChecked: Int!
+}
+
+type Port {
+  serviceName: String
+  portNumber: [Int!]!
+  transportProtocol: String
+  description: String
+  assignee: String
+  contact: String
+  registrationDate: String
+  modificationDate: String
+  reference: String
+  serviceCode: String
+  unauthorizedUseReported: String
+  assignmentNotes: String
+}
