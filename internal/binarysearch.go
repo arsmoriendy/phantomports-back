@@ -1,12 +1,17 @@
 package internal
 
-func BinarySearch(arr *[]int, toFind int) (bool, uint) {
+import "errors"
+
+var ErrSearchEmptyArr = errors.New("attempt to search on an empty array")
+
+func BinarySearch(arr *[]int, toFind int) (bool, uint, error) {
 	n := uint(len(*arr))
 	if n == 0 {
-		return false, 0
+		return false, 0, ErrSearchEmptyArr
 	}
 
-	return bs(arr, toFind, 0, n-1, n/2)
+	found, idx := bs(arr, toFind, 0, n-1, n/2)
+	return found, idx, nil
 }
 
 func bs(arr *[]int, toFind int, startIdx uint, endIdx uint, pivotIdx uint) (bool, uint) {
