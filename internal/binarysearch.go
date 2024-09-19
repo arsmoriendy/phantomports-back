@@ -1,10 +1,12 @@
 package internal
 
-func BinarySearch(arr *[]int, toFind int, startIdx uint, endIdx uint, pivotIdx uint) (bool, uint) {
-	if len(*arr) == 0 {
+func BinarySearch(arr *[]int, toFind int) (bool, uint) {
+	n := uint(len(*arr))
+	if n == 0 {
 		return false, 0
 	}
-	return bs(arr, toFind, startIdx, endIdx, pivotIdx)
+
+	return bs(arr, toFind, 0, n-1, n/2)
 }
 
 func bs(arr *[]int, toFind int, startIdx uint, endIdx uint, pivotIdx uint) (bool, uint) {
