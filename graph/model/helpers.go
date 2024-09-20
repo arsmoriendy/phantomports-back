@@ -32,8 +32,8 @@ func (s *Port) Smaller(p *Port) (bool, error) {
 		return false, ErrEmptyPortNumber
 	}
 	slast := s.PortNumber[len(s.PortNumber)-1]
-	plast := p.PortNumber[len(p.PortNumber)-1]
-	return slast > plast, nil
+	pfirst := p.PortNumber[0]
+	return slast < pfirst, nil
 }
 
 func (s *Port) Equal(p *Port) (bool, error) {
