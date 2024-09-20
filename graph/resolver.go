@@ -81,3 +81,43 @@ func (r *Resolver) GetPorts() {
 
 	}
 }
+
+func (r *Resolver) SearchPort(toFind *model.Port) (bool, uint, error) {
+	n := uint(len(r.ports))
+	if n == 0 {
+		return false, 0, internal.ErrSearchEmptyArr
+	}
+
+	return r.bsp(toFind, 0, n-1, n/2)
+}
+
+// binary search for array of ports
+func (r *Resolver) bsp(toFind *model.Port, startIdx uint, endIdx uint, pivotIdx uint) (bool, uint, error) {
+	pivotVal := r.ports[pivotIdx]
+
+	isLarger, err := pivotVal.Larger(toFind)
+	if err != nil {
+		return false, 0, err
+	}
+	isSmaller, err := pivotVal.Smaller(toFind)
+	if err != nil {
+		return false, 0, err
+	}
+	isEqual, err := pivotVal.Equal(toFind)
+	if err != nil {
+		return false, 0, err
+	}
+
+	if endIdx-startIdx < 2 {
+		return isEqual, pivotIdx, nil
+	}
+
+	if isLarger {
+		return r.bsp(toFind, startIdx, pivotIdx, startIdx+(pivotIdx-startIdx)/2)
+	} else if isSmaller {
+		pivotIdx++
+		return r.bsp(toFind, pivotIdx, endIdx, pivotIdx+(endIdx-pivotIdx)/2)
+	} else {
+		return true, pivotIdx, nil
+	}
+}
