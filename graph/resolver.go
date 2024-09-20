@@ -1,8 +1,11 @@
 package graph
 
 import (
+	c "encoding/csv"
+	"errors"
 	"fmt"
 	"io"
+	"os"
 	"time"
 
 	"github.com/arsmoriendy/opor/gql-srv/csv"
@@ -19,11 +22,28 @@ type Resolver struct {
 }
 
 func (r *Resolver) GetPorts() {
-	rdr, body, err := csv.FetchCsv()
+	var rdr *c.Reader
+	var body io.ReadCloser
+	var err error
+
+	if val, found := os.LookupEnv("MODE"); found && val == "DEV" {
+		f, err := os.Open("test/data/service-names-port-numbers.csv")
+		if errors.Is(err, os.ErrNotExist) {
+			panic(fmt.Errorf("%w: make sure to run in project root", err))
+		}
+		if err != nil {
+			panic(err)
+		}
+		rdr = c.NewReader(f)
+		body = f
+	} else {
+		rdr, body, err = csv.FetchCsv()
+	}
+
 	if err != nil {
 		panic(err)
 	}
-	defer (*body).Close()
+	defer body.Close()
 
 	r.lastChecked = time.Now()
 
@@ -33,7 +53,7 @@ func (r *Resolver) GetPorts() {
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			(*body).Close()
+			body.Close()
 			panic(err)
 		}
 
@@ -41,7 +61,7 @@ func (r *Resolver) GetPorts() {
 
 		recpnum, err := csv.ParsePort(rec[1])
 		if err != nil {
-			(*body).Close()
+			body.Close()
 			panic(fmt.Errorf("%w: with values %v", err, rec))
 		}
 		r.ports = append(r.ports, &model.Port{

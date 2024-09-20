@@ -11,7 +11,7 @@ import (
 
 var ErrInvalidStatusCode = errors.New("csv: invalid response status code (not 200 OK)")
 
-func FetchCsv() (*csv.Reader, *io.ReadCloser, error) {
+func FetchCsv() (*csv.Reader, io.ReadCloser, error) {
 	res, err := http.Get("https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.csv")
 	if err != nil {
 		return nil, nil, err
@@ -22,7 +22,7 @@ func FetchCsv() (*csv.Reader, *io.ReadCloser, error) {
 		return nil, nil, ErrInvalidStatusCode
 	}
 
-	return csv.NewReader(res.Body), &res.Body, nil
+	return csv.NewReader(res.Body), res.Body, nil
 }
 
 // Wrapper for determining if a port field is:
