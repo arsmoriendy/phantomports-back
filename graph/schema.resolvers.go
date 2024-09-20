@@ -33,6 +33,60 @@ func (r *queryResolver) LastChecked(ctx context.Context) (int, error) {
 	return int(r.lastChecked.Unix()), nil
 }
 
+// NextOpenPort is the resolver for the nextOpenPort field.
+func (r *queryResolver) NextOpenPort(ctx context.Context, portNumber int) (*int, error) {
+	tofind := model.Port{
+		PortNumber: []int{portNumber},
+	}
+
+	found, idx, _ := r.SearchPort(&tofind)
+	if !found {
+		return &portNumber, nil
+	}
+
+	nextPortIdx := idx + 1
+	for i := nextPortIdx; i < uint(len(r.ports)); i++ {
+		p := r.ports[i]
+		if p.Empty() {
+			continue
+		}
+
+		if p.Description != nil && *(p.Description) == "Unassigned" {
+			firstport := p.PortNumber[0]
+			return &firstport, nil
+		}
+	}
+
+	return nil, nil
+}
+
+// PrevOpenPort is the resolver for the prevOpenPort field.
+func (r *queryResolver) PrevOpenPort(ctx context.Context, portNumber int) (*int, error) {
+	tofind := model.Port{
+		PortNumber: []int{portNumber},
+	}
+
+	found, idx, _ := r.SearchPort(&tofind)
+	if !found {
+		return &portNumber, nil
+	}
+
+	prevPortIdx := idx - 1
+	for i := prevPortIdx; i > 0; i-- {
+		p := r.ports[i]
+		if p.Empty() {
+			continue
+		}
+
+		if p.Description != nil && *(p.Description) == "Unassigned" {
+			lastport := p.PortNumber[len(p.PortNumber)-1]
+			return &lastport, nil
+		}
+	}
+
+	return nil, nil
+}
+
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 

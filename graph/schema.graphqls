@@ -5,6 +5,8 @@
 type Query {
   ports(portNumber: Int): [Port!]!
   lastChecked: Int!
+  nextOpenPort(portNumber: Int!): Int
+  prevOpenPort(portNumber: Int!): Int
 }
 
 type Port {
