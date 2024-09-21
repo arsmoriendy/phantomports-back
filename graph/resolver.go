@@ -27,7 +27,7 @@ func (r *Resolver) GetPorts() {
 	var body io.ReadCloser
 	var err error
 
-	if val, found := os.LookupEnv("MODE"); found && val == "DEV" {
+	if internal.IsDevMode() {
 		f, err := os.Open("test/data/service-names-port-numbers.csv")
 		if errors.Is(err, os.ErrNotExist) {
 			panic(fmt.Errorf("%w: make sure to run in project root", err))
