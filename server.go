@@ -8,6 +8,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/arsmoriendy/opor/gql-srv/graph"
+	"github.com/arsmoriendy/opor/gql-srv/internal"
 	"github.com/go-chi/chi/v5"
 	"github.com/rs/cors"
 )
@@ -15,6 +16,12 @@ import (
 const defaultPort = "8080"
 
 func main() {
+	if internal.IsDevMode() {
+		log.SetPrefix("[DEV] ")
+	} else {
+		log.SetPrefix("[PROD] ")
+	}
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
