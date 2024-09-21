@@ -35,9 +35,14 @@ func main() {
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &rslvr}))
 
-	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	router.Handle("/query", srv)
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	if internal.IsDevMode() {
+		router.Handle("/", playground.Handler("GraphQL playground", "/query"))
+		log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	} else {
+		log.Printf("connect to http://localhost:%s/query for GraphQL API", port)
+	}
+
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }
