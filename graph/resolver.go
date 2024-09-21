@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"time"
 
@@ -38,6 +39,7 @@ func (r *Resolver) GetPorts() {
 		rdr = c.NewReader(f)
 		body = f
 	} else {
+		log.Println("fetching csv...")
 		rdr, body, err = csv.FetchCsv()
 	}
 
