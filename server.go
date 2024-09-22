@@ -26,6 +26,10 @@ func main() {
 	if port == "" {
 		port = defaultPort
 	}
+	host := os.Getenv("HOST")
+	if host == "" {
+		host = "localhost"
+	}
 
 	router := chi.NewRouter()
 	router.Use(cors.AllowAll().Handler)
@@ -39,10 +43,10 @@ func main() {
 
 	if internal.IsDevMode() {
 		router.Handle("/", playground.Handler("GraphQL playground", "/query"))
-		log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+		log.Printf("connect to http://%s:%s/ for GraphQL playground", host, port)
 	} else {
-		log.Printf("connect to http://localhost:%s/query for GraphQL API", port)
+		log.Printf("connect to http://%s:%s/query for GraphQL API", host, port)
 	}
 
-	log.Fatal(http.ListenAndServe(":"+port, router))
+	log.Fatal(http.ListenAndServe(host+":"+port, router))
 }
