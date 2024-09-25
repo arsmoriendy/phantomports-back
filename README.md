@@ -8,6 +8,7 @@ Environment Variable | Description
 `PORT` | Port to run server
 `HOST` | Host to run server
 `LOG_LEVEL` | One of *Verbosity* or *Level* (e.g. `LOG_LEVEL=2` is the same as `LOG_LEVEL=wArN`). See [Log Levels](#log-levels)
+`DB_URL` | Database URL
 
 ## Log Levels
 Verbosity | Level (Case Insensitive)
