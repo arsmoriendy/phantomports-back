@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -10,6 +11,7 @@ import (
 	"github.com/arsmoriendy/opor/gql-srv/graph"
 	"github.com/arsmoriendy/opor/gql-srv/internal"
 	"github.com/go-chi/chi/v5"
+	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 )
 
@@ -22,6 +24,11 @@ func main() {
 		log.SetPrefix("[PROD] ")
 	}
 
+	// load env vars
+	err := godotenv.Load()
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		panic(err)
+	}
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
