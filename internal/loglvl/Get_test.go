@@ -1,7 +1,6 @@
 package loglvl
 
 import (
-	"errors"
 	"os"
 	"testing"
 )
@@ -13,11 +12,7 @@ func TestStr(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	lvl, err := Get()
-	if err != nil {
-		t.Fatal(err)
-	}
-
+	lvl := Get()
 	if lvl != TRACE {
 		t.Fatal(lvl)
 	}
@@ -30,11 +25,7 @@ func TestNumStr(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	lvl, err := Get()
-	if err != nil {
-		t.Fatal(err)
-	}
-
+	lvl := Get()
 	if lvl != TRACE {
 		t.Fatal(lvl)
 	}
@@ -47,9 +38,9 @@ func TestNan(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = Get()
-	if !errors.Is(err, ErrInvalidLvlStr) {
-		t.Fatal(err)
+	lvl := Get()
+	if lvl != INFO {
+		t.Fatal(lvl)
 	}
 }
 
@@ -59,8 +50,8 @@ func TestOverbound(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = Get()
-	if !errors.Is(err, ErrOutOfBounds) {
-		t.Fatal(err)
+	lvl := Get()
+	if lvl != INFO {
+		t.Fatal(lvl)
 	}
 }

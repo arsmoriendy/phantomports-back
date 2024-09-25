@@ -3,6 +3,7 @@ package loglvl
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -18,6 +19,8 @@ const (
 	DEBUG
 	TRACE
 )
+
+const DEFAULT_LOG_LEVEL = INFO
 
 // LogLvl to string
 var lvlStr = map[LogLvl]string{
@@ -50,10 +53,10 @@ func checkLvlBound(lvl LogLvl) error {
 	return nil
 }
 
-func Get() (LogLvl, error) {
-	lvlStr := os.Getenv("LOG_LEVEL")
+func Get() LogLvl {
+	lvlenv := os.Getenv("LOG_LEVEL")
 
-	lvlNum, err := strconv.Atoi(lvlStr)
+	lvlNum, err := strconv.Atoi(lvlenv)
 	if err != nil {
 		goto CHECK_STR
 	}
@@ -61,16 +64,18 @@ func Get() (LogLvl, error) {
 	// assume $LOG_LEVEL a number
 	err = checkLvlBound(LogLvl(lvlNum))
 	if err != nil {
-		return 0, err
+		log.Println(
+			fmt.Errorf("%w: using default level: %v\n", err, lvlStr[DEFAULT_LOG_LEVEL]))
+		return DEFAULT_LOG_LEVEL
 	}
-	return LogLvl(lvlNum), nil
+	return LogLvl(lvlNum)
 
 CHECK_STR:
 	// assume $LOG_LEVEL is a stirng
-	lvlstring, err := checkLvlStr(lvlStr)
+	lvlstring, err := checkLvlStr(lvlenv)
 	if err != nil {
-		return 0, err
+		return DEFAULT_LOG_LEVEL
 	}
 
-	return lvlstring, nil
+	return lvlstring
 }
