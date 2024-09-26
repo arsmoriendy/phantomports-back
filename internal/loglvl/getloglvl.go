@@ -9,7 +9,9 @@ import (
 	"strings"
 )
 
-type LogLvl uint
+type LogLvlT uint
+
+var LogLvl LogLvlT
 
 const (
 	FATAL = iota
@@ -23,7 +25,7 @@ const (
 const DEFAULT_LOG_LEVEL = INFO
 
 // LogLvl to string
-var lvlStr = map[LogLvl]string{
+var lvlStr = map[LogLvlT]string{
 	FATAL: "FATAL",
 	ERROR: "ERROR",
 	WARN:  "WARN",
@@ -35,7 +37,7 @@ var lvlStr = map[LogLvl]string{
 var ErrInvalidLvlStr = errors.New("invalid log level string")
 
 // string to LogLvl
-func checkLvlStr(lvl string) (LogLvl, error) {
+func checkLvlStr(lvl string) (LogLvlT, error) {
 	for k, v := range lvlStr {
 		if strings.EqualFold(lvl, v) {
 			return k, nil
@@ -46,14 +48,14 @@ func checkLvlStr(lvl string) (LogLvl, error) {
 
 var ErrOutOfBounds = errors.New("log level out of bounds")
 
-func checkLvlBound(lvl LogLvl) error {
+func checkLvlBound(lvl LogLvlT) error {
 	if lvl < FATAL || lvl > TRACE {
 		return fmt.Errorf("%w: %v", ErrOutOfBounds, lvl)
 	}
 	return nil
 }
 
-func Get() LogLvl {
+func Get() LogLvlT {
 	lvlenv := os.Getenv("LOG_LEVEL")
 
 	lvlNum, err := strconv.Atoi(lvlenv)
@@ -62,13 +64,13 @@ func Get() LogLvl {
 	}
 
 	// assume $LOG_LEVEL a number
-	err = checkLvlBound(LogLvl(lvlNum))
+	err = checkLvlBound(LogLvlT(lvlNum))
 	if err != nil {
 		log.Println(
 			fmt.Errorf("%w: using default level: %v\n", err, lvlStr[DEFAULT_LOG_LEVEL]))
 		return DEFAULT_LOG_LEVEL
 	}
-	return LogLvl(lvlNum)
+	return LogLvlT(lvlNum)
 
 CHECK_STR:
 	// assume $LOG_LEVEL is a stirng
