@@ -10,6 +10,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/arsmoriendy/opor/gql-srv/graph"
 	"github.com/arsmoriendy/opor/gql-srv/internal"
+	"github.com/arsmoriendy/opor/gql-srv/internal/loglvl"
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
@@ -37,6 +38,8 @@ func main() {
 	if host == "" {
 		host = "localhost"
 	}
+
+	loglvl.Init()
 
 	router := chi.NewRouter()
 	router.Use(cors.AllowAll().Handler)

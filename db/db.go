@@ -20,7 +20,7 @@ func InitPool() {
 		pool.Close()
 		panic(fmt.Errorf("unable to create connection pool: %w", err))
 	}
-	if loglvl.Get() >= loglvl.INFO {
+	if loglvl.LogLvl >= loglvl.INFO {
 		log.Printf("connected to database")
 	}
 	Pool = pool

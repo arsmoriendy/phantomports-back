@@ -11,6 +11,7 @@ import (
 
 type LogLvlT uint
 
+// Memoized runtime LogLvlT
 var LogLvl LogLvlT
 
 const (
@@ -55,6 +56,7 @@ func checkLvlBound(lvl LogLvlT) error {
 	return nil
 }
 
+// Use memoized var LogLvl instead, but don't forget to call Init().
 func Get() LogLvlT {
 	lvlenv := os.Getenv("LOG_LEVEL")
 
@@ -80,4 +82,8 @@ CHECK_STR:
 	}
 
 	return lvlstring
+}
+
+func Init() {
+	LogLvl = Get()
 }
