@@ -20,5 +20,10 @@ Verbosity | Level (Case Insensitive)
 4 | `DEBUG`
 5 | `TRACE`
 
+## Authorization
+Authorization is done using [HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication) with the `Basic` scheme.
+
+The **username** field should be left blank. The **password** field should be a valid **UUID** registered in the database.
+
 > [!NOTE]
 > This repo was originally apart of [the archived monorepo](https://github.com/arsmoriendy/opor)
