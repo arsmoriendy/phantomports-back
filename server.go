@@ -8,9 +8,11 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/arsmoriendy/opor/gql-srv/db"
 	"github.com/arsmoriendy/opor/gql-srv/graph"
 	"github.com/arsmoriendy/opor/gql-srv/internal"
 	"github.com/arsmoriendy/opor/gql-srv/internal/loglvl"
+	"github.com/arsmoriendy/opor/gql-srv/server"
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
@@ -40,9 +42,10 @@ func main() {
 	}
 
 	loglvl.Init()
+	db.InitPool()
 
 	router := chi.NewRouter()
-	router.Use(cors.AllowAll().Handler)
+	router.Use(server.Auth, cors.AllowAll().Handler)
 
 	rslvr := graph.Resolver{}
 	rslvr.GetPorts()
