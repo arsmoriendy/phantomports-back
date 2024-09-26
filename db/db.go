@@ -31,6 +31,9 @@ func UuidExists(uuid string) (exists bool, err error) {
 
 	var existsInt int
 	err = row.Scan(&existsInt)
+	if err.Error() == "no rows in result set" {
+		return false, nil
+	}
 	if err != nil {
 		return
 	}
