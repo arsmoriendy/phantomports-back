@@ -26,11 +26,11 @@ type Resolver struct {
 
 func New() (r Resolver) {
 	// TODO: refresh periodically
-	r.refreshPorts()
+	r.fillPorts()
 	return
 }
 
-func (r *Resolver) refreshPorts() {
+func (r *Resolver) fillPorts() {
 	var rdr *c.Reader
 	var body io.ReadCloser
 	var err error
