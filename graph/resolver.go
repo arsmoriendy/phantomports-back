@@ -48,11 +48,13 @@ func New() *Resolver {
 // Wrapper for calling `fillPorts` periodically. `ri` = refresh interval.
 // If initial call to `fillPorts` fail, panic. Otherwise, log the error and move on.
 func (r *Resolver) refreshPorts(ri time.Duration) {
+	// initial call
 	ports, err := r.fillPorts()
 	if err != nil {
 		panic(err)
 	}
 	r.ports = ports
+	r.lastChecked = time.Now()
 
 	ticker := time.NewTicker(ri)
 	go func() {
@@ -63,12 +65,15 @@ func (r *Resolver) refreshPorts(ri time.Duration) {
 				log.Println(err)
 			}
 			r.ports = ports
+			r.lastChecked = time.Now()
 		}
 	}()
 }
 
 // Fills `ports` field
 func (r *Resolver) fillPorts() (ports []*model.Port, err error) {
+	// TODO: test this function
+
 	var rdr *c.Reader
 	var body io.ReadCloser
 
@@ -97,9 +102,6 @@ func (r *Resolver) fillPorts() (ports []*model.Port, err error) {
 		return
 	}
 	defer body.Close()
-
-	// TODO: move this out
-	r.lastChecked = time.Now()
 
 	rdr.Read() // skip header
 	for {
