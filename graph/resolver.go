@@ -48,30 +48,29 @@ func New() *Resolver {
 // Wrapper for calling `fillPorts` periodically. `ri` = refresh interval.
 // If initial call to `fillPorts` fail, panic. Otherwise, log the error and move on.
 func (r *Resolver) refreshPorts(ri time.Duration) {
-	err := r.fillPorts()
+	ports, err := r.fillPorts()
 	if err != nil {
 		panic(err)
 	}
+	r.ports = ports
 
 	ticker := time.NewTicker(ri)
 	go func() {
 		for {
 			<-ticker.C
-			// TODO: empty only if and after success
-			r.ports = []*model.Port{} // empty
-			err := r.fillPorts()
+			ports, err = r.fillPorts()
 			if err != nil && loglvl.LogLvl >= loglvl.ERROR {
 				log.Println(err)
 			}
+			r.ports = ports
 		}
 	}()
 }
 
 // Fills `ports` field
-func (r *Resolver) fillPorts() error {
+func (r *Resolver) fillPorts() (ports []*model.Port, err error) {
 	var rdr *c.Reader
 	var body io.ReadCloser
-	var err error
 
 	if internal.IsDevMode() {
 		f, err := os.Open("test/data/service-names-port-numbers.csv")
@@ -92,32 +91,36 @@ func (r *Resolver) fillPorts() error {
 		}
 		rdr, body, err = csv.FetchCsv()
 	}
+	// TODO: log done fetching/using mock
 
 	if err != nil {
-		return err
+		return
 	}
 	defer body.Close()
 
+	// TODO: move this out
 	r.lastChecked = time.Now()
 
 	rdr.Read() // skip header
 	for {
-		rec, err := rdr.Read()
+		var rec []string
+		rec, err = rdr.Read()
 		if err == io.EOF {
 			break
 		} else if err != nil {
 			body.Close()
-			return err
+			return
 		}
 
 		rdr.FieldsPerRecord = 12
 
-		recpnum, err := csv.ParsePort(rec[1])
+		var recpnum []int
+		recpnum, err = csv.ParsePort(rec[1])
 		if err != nil {
 			body.Close()
-			return err
+			return
 		}
-		r.ports = append(r.ports, &model.Port{
+		ports = append(ports, &model.Port{
 			ServiceName:             &rec[0],
 			PortNumber:              recpnum,
 			TransportProtocol:       &rec[2],
@@ -133,7 +136,7 @@ func (r *Resolver) fillPorts() error {
 		})
 
 	}
-	return nil
+	return ports, nil
 }
 
 func (r *Resolver) SearchPort(toFind *model.Port) (bool, uint, error) {
