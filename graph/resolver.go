@@ -36,6 +36,9 @@ func (r *Resolver) GetPorts() {
 		if err != nil {
 			panic(err)
 		}
+		if loglvl.LogLvl >= loglvl.INFO {
+			log.Println("using test/mock csv file")
+		}
 		rdr = c.NewReader(f)
 		body = f
 	} else {
