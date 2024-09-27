@@ -12,6 +12,7 @@ import (
 	"github.com/arsmoriendy/opor/gql-srv/csv"
 	"github.com/arsmoriendy/opor/gql-srv/graph/model"
 	"github.com/arsmoriendy/opor/gql-srv/internal"
+	"github.com/arsmoriendy/opor/gql-srv/internal/loglvl"
 )
 
 // This file will not be regenerated automatically.
