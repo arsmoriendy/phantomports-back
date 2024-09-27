@@ -25,6 +25,10 @@ type Resolver struct {
 }
 
 func (r *Resolver) GetPorts() {
+	r.refreshPorts()
+}
+
+func (r *Resolver) refreshPorts() {
 	var rdr *c.Reader
 	var body io.ReadCloser
 	var err error
