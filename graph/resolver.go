@@ -46,20 +46,29 @@ func New() *Resolver {
 }
 
 // Wrapper for calling `fillPorts` periodically. `ri` = refresh interval.
+// If initial call to `fillPorts` fail, panic. Otherwise, log the error and move on.
 func (r *Resolver) refreshPorts(ri time.Duration) {
-	r.fillPorts()
+	err := r.fillPorts()
+	if err != nil {
+		panic(err)
+	}
+
 	ticker := time.NewTicker(ri)
 	go func() {
 		for {
 			<-ticker.C
+			// TODO: empty only if and after success
 			r.ports = []*model.Port{} // empty
-			r.fillPorts()
+			err := r.fillPorts()
+			if err != nil && loglvl.LogLvl >= loglvl.ERROR {
+				log.Println(err)
+			}
 		}
 	}()
 }
 
 // Fills `ports` field
-func (r *Resolver) fillPorts() {
+func (r *Resolver) fillPorts() error {
 	var rdr *c.Reader
 	var body io.ReadCloser
 	var err error
@@ -85,7 +94,7 @@ func (r *Resolver) fillPorts() {
 	}
 
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer body.Close()
 
@@ -98,7 +107,7 @@ func (r *Resolver) fillPorts() {
 			break
 		} else if err != nil {
 			body.Close()
-			panic(err)
+			return err
 		}
 
 		rdr.FieldsPerRecord = 12
@@ -106,7 +115,7 @@ func (r *Resolver) fillPorts() {
 		recpnum, err := csv.ParsePort(rec[1])
 		if err != nil {
 			body.Close()
-			panic(fmt.Errorf("%w: with values %v", err, rec))
+			return err
 		}
 		r.ports = append(r.ports, &model.Port{
 			ServiceName:             &rec[0],
@@ -124,6 +133,7 @@ func (r *Resolver) fillPorts() {
 		})
 
 	}
+	return nil
 }
 
 func (r *Resolver) SearchPort(toFind *model.Port) (bool, uint, error) {
