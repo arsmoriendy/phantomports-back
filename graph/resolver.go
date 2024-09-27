@@ -24,8 +24,10 @@ type Resolver struct {
 	lastChecked time.Time
 }
 
-func (r *Resolver) GetPorts() {
+func New() (r Resolver) {
+	// TODO: refresh periodically
 	r.refreshPorts()
+	return
 }
 
 func (r *Resolver) refreshPorts() {

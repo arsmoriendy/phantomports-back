@@ -47,8 +47,7 @@ func main() {
 	router := chi.NewRouter()
 	router.Use(server.Auth, cors.AllowAll().Handler)
 
-	rslvr := graph.Resolver{}
-	rslvr.GetPorts()
+	rslvr := graph.New()
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &rslvr}))
 
