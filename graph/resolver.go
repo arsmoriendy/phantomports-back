@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/arsmoriendy/opor/gql-srv/csv"
@@ -24,12 +25,40 @@ type Resolver struct {
 	lastChecked time.Time
 }
 
-func New() (r Resolver) {
-	// TODO: refresh periodically
-	r.fillPorts()
-	return
+func New() *Resolver {
+	var r = Resolver{}
+
+	var ri time.Duration
+
+	ri_env := os.Getenv("REFRESH_INTERVAL")
+	if ri_int, err := strconv.Atoi(ri_env); err != nil {
+		ri = time.Hour
+	} else {
+		ri = time.Duration(ri_int) * time.Millisecond
+	}
+
+	if loglvl.LogLvl >= loglvl.INFO {
+		log.Printf("refreshing ports every %s", ri.String())
+	}
+
+	r.refreshPorts(ri)
+	return &r
 }
 
+// Wrapper for calling `fillPorts` periodically. `ri` = refresh interval.
+func (r *Resolver) refreshPorts(ri time.Duration) {
+	r.fillPorts()
+	ticker := time.NewTicker(ri)
+	go func() {
+		for {
+			<-ticker.C
+			r.ports = []*model.Port{} // empty
+			r.fillPorts()
+		}
+	}()
+}
+
+// Fills `ports` field
 func (r *Resolver) fillPorts() {
 	var rdr *c.Reader
 	var body io.ReadCloser

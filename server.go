@@ -49,7 +49,7 @@ func main() {
 
 	rslvr := graph.New()
 
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &rslvr}))
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: rslvr}))
 
 	router.Handle("/query", srv)
 

@@ -9,6 +9,7 @@ Environment Variable | Description
 `HOST` | Host to run server
 `LOG_LEVEL` | One of *Verbosity* or *Level* (e.g. `LOG_LEVEL=2` is the same as `LOG_LEVEL=wArN`). See [Log Levels](#log-levels)
 `DB_URL` | Database URL
+`REFRESH_INTERVAL` | Interval to refresh ports from IANA's registry in milliseconds
 
 ## Log Levels
 Verbosity | Level (Case Insensitive)
