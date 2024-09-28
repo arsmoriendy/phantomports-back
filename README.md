@@ -10,6 +10,7 @@ Environment Variable | Description
 `LOG_LEVEL` | One of *Verbosity* or *Level* (e.g. `LOG_LEVEL=2` is the same as `LOG_LEVEL=wArN`). See [Log Levels](#log-levels)
 `DB_URL` | Database URL
 `REFRESH_INTERVAL` | Interval to refresh ports from IANA's registry in milliseconds. Defaults to an hour
+`FRONT_UUID_EXPR` | Expiration time for frontend uuid in milliseconds. Defaults to an hour
 
 ## Log Levels
 Verbosity | Level (Case Insensitive)
