@@ -7,7 +7,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/arsmoriendy/opor/gql-srv/csv"
@@ -28,20 +27,11 @@ type Resolver struct {
 func New() *Resolver {
 	var r = Resolver{}
 
-	var ri time.Duration
-
-	ri_env := os.Getenv("REFRESH_INTERVAL")
-	if ri_int, err := strconv.Atoi(ri_env); err != nil {
-		ri = time.Hour
-	} else {
-		ri = time.Duration(ri_int) * time.Millisecond
-	}
-
 	if loglvl.LogLvl >= loglvl.INFO {
-		log.Printf("refreshing ports every %s", ri.String())
+		log.Printf("refreshing ports every %s", internal.RefInterval.String())
 	}
 
-	r.refreshPorts(ri)
+	r.refreshPorts(internal.RefInterval)
 	return &r
 }
 
