@@ -69,3 +69,17 @@ func NewUuid() (uuidStr string, err error) {
 
 	return string(uuidJson), nil
 }
+
+func RmUuid(uuidStr string) (err error) {
+	uuid, err := uuid.Parse(uuidStr)
+	if err != nil {
+		return
+	}
+
+	_, err = Pool.Exec(context.Background(), "delete from uuids where uuid = $1", uuid)
+	if err != nil {
+		return
+	}
+
+	return
+}
