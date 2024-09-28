@@ -42,6 +42,7 @@ func main() {
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: rslvr}))
 
 	router.Handle("/query", server.Auth(srv))
+	router.Get("/refresh-front-uuid", server.RefreshFrontUuid)
 
 	if internal.IsDevMode() {
 		router.Handle("/", playground.Handler("GraphQL playground", "/query"))

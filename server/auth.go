@@ -6,10 +6,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
+	"time"
 
 	"github.com/arsmoriendy/opor/gql-srv/db"
+	"github.com/arsmoriendy/opor/gql-srv/internal"
 	"github.com/arsmoriendy/opor/gql-srv/internal/loglvl"
+	"github.com/joho/godotenv"
 )
 
 var ErrAuthHeaderFmt = errors.New("authentication header has an invalid format")
@@ -55,6 +59,64 @@ func Auth(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+// Password to refresh frontend uuid
+var refpass = func() string {
+	godotenv.Load()
+	refpass_env := os.Getenv("REF_FRONT_UUID_PASS")
+	if refpass_env == "" {
+		panic("$REF_FRONT_UUID_PASS must be set")
+	}
+	return refpass_env
+}()
+
+func RefreshFrontUuid(w http.ResponseWriter, r *http.Request) {
+	// check auth header
+	aHdr := r.Header.Get("Authorization")
+	if aHdr == "" {
+		w.Header().Add("WWW-Authenticate", "Basic realm=\"Refresh frontend UUID\"")
+		w.WriteHeader(401)
+		return
+	}
+
+	// parse auth header
+	_, password, err := parseBasicAuth(aHdr)
+	if err != nil {
+		w.WriteHeader(400)
+		if loglvl.LogLvl >= loglvl.TRACE {
+			log.Println(err)
+		}
+		return
+	}
+
+	// authorize password
+	if password != refpass {
+		w.WriteHeader(403)
+		return
+	}
+
+	// register uuid
+	uuid, err := db.NewFrontUuid()
+	if err != nil {
+		w.WriteHeader(500)
+		if loglvl.LogLvl >= loglvl.ERROR {
+			log.Println("refresh handler: " + err.Error())
+		}
+		return
+	}
+
+	// delete on expire (not guaranteed if process closes)
+	del_timer := time.NewTimer(internal.FrontUuidExpr)
+	go func() {
+		<-del_timer.C
+		err := db.RmUuid(uuid)
+		if err != nil && loglvl.LogLvl >= loglvl.ERROR {
+			log.Println(err)
+		}
+	}()
+
+	w.Write([]byte(uuid))
 }
 
 func parseBasicAuth(authHeader string) (username string, password string, err error) {

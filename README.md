@@ -11,6 +11,7 @@ Environment Variable | Description
 `DB_URL` | Database URL
 `REFRESH_INTERVAL` | Interval to refresh ports from IANA's registry in milliseconds. Defaults to an hour
 `FRONT_UUID_EXPR` | Expiration time for frontend uuid in milliseconds. Defaults to an hour
+`REF_FRONT_UUID_PASS` | Password to refresh frontend uuid
 
 ## Log Levels
 Verbosity | Level (Case Insensitive)
