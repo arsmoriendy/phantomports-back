@@ -41,8 +41,13 @@ func InitPool() {
 	Pool = pool
 }
 
-func UuidValid(uuid string) (exists bool, err error) {
-	row := Pool.QueryRow(context.Background(), "select expire_at from uuids where uuid = $1", uuid)
+func UuidValid(uuidStr string) (exists bool, err error) {
+	uuid_uuid, err := uuid.Parse(uuidStr)
+	if err != nil {
+		return
+	}
+
+	row := Pool.QueryRow(context.Background(), "select expire_at from uuids where uuid = $1", uuid_uuid)
 
 	var expire *time.Time
 	err = row.Scan(&expire)
