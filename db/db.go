@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
+	"github.com/arsmoriendy/opor/gql-srv/internal"
 	"github.com/arsmoriendy/opor/gql-srv/internal/loglvl"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -55,6 +57,25 @@ func UuidExists(uuid string) (exists bool, err error) {
 
 func NewUuid() (uuidStr string, err error) {
 	row := Pool.QueryRow(context.Background(), "insert into uuids default values returning uuid")
+
+	var uuid uuid.UUID
+	err = row.Scan(&uuid)
+	if err != nil {
+		return
+	}
+
+	uuidJson, err := uuid.MarshalText()
+	if err != nil {
+		return
+	}
+
+	return string(uuidJson), nil
+}
+
+func NewFrontUuid() (uuidStr string, err error) {
+	row := Pool.QueryRow(context.Background(),
+		"insert into uuids(expire_at) values($1) returning uuid",
+		time.Now().Add(internal.FrontUuidExpr))
 
 	var uuid uuid.UUID
 	err = row.Scan(&uuid)
