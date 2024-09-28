@@ -46,13 +46,13 @@ func main() {
 	defer db.Pool.Close()
 
 	router := chi.NewRouter()
-	router.Use(server.Auth, cors.AllowAll().Handler)
+	router.Use(cors.AllowAll().Handler)
 
 	rslvr := graph.New()
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: rslvr}))
 
-	router.Handle("/query", srv)
+	router.Handle("/query", server.Auth(srv))
 
 	if internal.IsDevMode() {
 		router.Handle("/", playground.Handler("GraphQL playground", "/query"))
