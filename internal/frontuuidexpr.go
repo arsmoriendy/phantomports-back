@@ -17,3 +17,7 @@ func getFrontUuidExpr() (expr time.Duration) {
 	}
 	return
 }
+
+func ResetFrontUuidExpr() {
+	FrontUuidExpr = getFrontUuidExpr()
+}
