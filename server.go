@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -14,24 +13,14 @@ import (
 	"github.com/arsmoriendy/opor/gql-srv/internal/loglvl"
 	"github.com/arsmoriendy/opor/gql-srv/server"
 	"github.com/go-chi/chi/v5"
-	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 )
 
 const defaultPort = "8080"
 
 func main() {
-	if internal.IsDevMode() {
-		log.SetPrefix("[DEV] ")
-	} else {
-		log.SetPrefix("[PROD] ")
-	}
+	internal.Init()
 
-	// load env vars
-	err := godotenv.Load()
-	if err != nil && !errors.Is(err, os.ErrNotExist) {
-		panic(err)
-	}
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
