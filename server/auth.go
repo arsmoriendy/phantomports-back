@@ -38,7 +38,11 @@ func Auth(next http.Handler) http.Handler {
 		// authorize uuid
 		exists, err := db.UuidValid(password)
 		if err != nil {
-			w.WriteHeader(400)
+			if err.Error()[:12] == "invalid UUID" {
+				w.WriteHeader(400)
+				return
+			}
+			w.WriteHeader(500)
 			if loglvl.LogLvl >= loglvl.TRACE {
 				log.Println(err)
 			}
