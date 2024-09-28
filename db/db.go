@@ -42,17 +42,20 @@ func InitPool() {
 }
 
 func UuidExists(uuid string) (exists bool, err error) {
-	row := Pool.QueryRow(context.Background(), "select 1 from uuids where uuid = $1", uuid)
+	row := Pool.QueryRow(context.Background(), "select expire_at from uuids where uuid = $1", uuid)
 
-	var existsInt int
-	err = row.Scan(&existsInt)
+	var expire *time.Time
+	err = row.Scan(&expire)
 	if err != nil {
 		if err.Error() == "no rows in result set" {
 			return false, nil
 		}
 		return
 	}
-	return existsInt == 1, nil
+	if expire != nil {
+		return expire.After(time.Now()), nil
+	}
+	return true, nil
 }
 
 func NewUuid() (uuidStr string, err error) {
