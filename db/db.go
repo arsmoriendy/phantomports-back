@@ -7,7 +7,10 @@ import (
 	"os"
 
 	"github.com/arsmoriendy/opor/gql-srv/internal/loglvl"
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	pgxuuid "github.com/vgarvardt/pgx-google-uuid/v5"
 )
 
 // Make sure to initialize using InitPool().
@@ -15,7 +18,16 @@ import (
 var Pool *pgxpool.Pool
 
 func InitPool() {
-	pool, err := pgxpool.New(context.Background(), os.Getenv("DB_URL"))
+	dbcfg, err := pgxpool.ParseConfig(os.Getenv("DB_URL"))
+	if err != nil {
+		panic(err)
+	}
+	dbcfg.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+		pgxuuid.Register(conn.TypeMap())
+		return nil
+	}
+
+	pool, err := pgxpool.NewWithConfig(context.Background(), dbcfg)
 	if err != nil {
 		pool.Close()
 		panic(fmt.Errorf("unable to create connection pool: %w", err))
@@ -23,6 +35,7 @@ func InitPool() {
 	if loglvl.LogLvl >= loglvl.INFO {
 		log.Printf("connected to database")
 	}
+
 	Pool = pool
 }
 
@@ -38,4 +51,21 @@ func UuidExists(uuid string) (exists bool, err error) {
 		return
 	}
 	return existsInt == 1, nil
+}
+
+func NewUuid() (uuidStr string, err error) {
+	row := Pool.QueryRow(context.Background(), "insert into uuids default values returning uuid")
+
+	var uuid uuid.UUID
+	err = row.Scan(&uuid)
+	if err != nil {
+		return
+	}
+
+	uuidJson, err := uuid.MarshalText()
+	if err != nil {
+		return
+	}
+
+	return string(uuidJson), nil
 }

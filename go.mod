@@ -5,16 +5,17 @@ go 1.22.5
 require (
 	github.com/99designs/gqlgen v0.17.50
 	github.com/go-chi/chi/v5 v5.1.0
+	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/joho/godotenv v1.5.1
 	github.com/rs/cors v1.11.1
 	github.com/vektah/gqlparser/v2 v2.5.16
+	github.com/vgarvardt/pgx-google-uuid/v5 v5.6.0
 )
 
 require (
 	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
