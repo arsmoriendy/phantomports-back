@@ -43,6 +43,7 @@ func main() {
 
 	loglvl.Init()
 	db.InitPool()
+	defer db.Pool.Close()
 
 	router := chi.NewRouter()
 	router.Use(server.Auth, cors.AllowAll().Handler)
