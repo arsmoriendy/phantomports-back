@@ -36,7 +36,7 @@ func Auth(next http.Handler) http.Handler {
 		}
 
 		// authorize uuid
-		exists, err := db.UuidExists(password)
+		exists, err := db.UuidValid(password)
 		if err != nil {
 			w.WriteHeader(400)
 			if loglvl.LogLvl >= loglvl.TRACE {
