@@ -7,7 +7,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var FrontUuidExpr = getRefInterval()
+var FrontUuidExpr = getFrontUuidExpr()
 
 func getFrontUuidExpr() (expr time.Duration) {
 	godotenv.Load()
