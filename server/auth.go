@@ -93,6 +93,9 @@ func RefreshFrontUuid(w http.ResponseWriter, r *http.Request) {
 	// authorize password
 	if password != refpass {
 		w.WriteHeader(403)
+		if loglvl.LogLvl >= loglvl.TRACE {
+			log.Println("invalid ref front uuid pass: " + password)
+		}
 		return
 	}
 
