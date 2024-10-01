@@ -23,4 +23,6 @@ func Init() {
 	}
 
 	loglvl.Init()
+
+	FrontUuidExpr = getFrontUuidExpr()
 }

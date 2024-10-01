@@ -4,13 +4,11 @@ import (
 	"os"
 	"strconv"
 	"time"
-	"github.com/joho/godotenv"
 )
 
-var FrontUuidExpr = getFrontUuidExpr()
+var FrontUuidExpr time.Duration
 
 func getFrontUuidExpr() (expr time.Duration) {
-	godotenv.Load()
 	expr_env := os.Getenv("FRONT_UUID_EXPR")
 	if expr_int, err := strconv.Atoi(expr_env); err != nil {
 		expr = time.Hour
