@@ -27,10 +27,6 @@ type Resolver struct {
 func New() *Resolver {
 	var r = Resolver{}
 
-	if loglvl.LogLvl >= loglvl.INFO {
-		log.Printf("refreshing ports every %s", internal.RefInterval.String())
-	}
-
 	r.refreshPorts(internal.RefInterval)
 	return &r
 }

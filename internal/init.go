@@ -30,4 +30,7 @@ func Init() {
 	}
 
 	RefInterval = getRefInterval()
+	if loglvl.LogLvl >= loglvl.INFO {
+		log.Printf("refreshing ports every %s", RefInterval)
+	}
 }
