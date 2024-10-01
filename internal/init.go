@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/arsmoriendy/opor/gql-srv/internal/loglvl"
 	"github.com/joho/godotenv"
 )
 
@@ -20,4 +21,6 @@ func Init() {
 	if err != nil && !errors.Is(err, os.ErrNotExist) {
 		panic(err)
 	}
+
+	loglvl.Init()
 }

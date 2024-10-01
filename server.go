@@ -10,7 +10,6 @@ import (
 	"github.com/arsmoriendy/opor/gql-srv/db"
 	"github.com/arsmoriendy/opor/gql-srv/graph"
 	"github.com/arsmoriendy/opor/gql-srv/internal"
-	"github.com/arsmoriendy/opor/gql-srv/internal/loglvl"
 	"github.com/arsmoriendy/opor/gql-srv/server"
 	"github.com/go-chi/chi/v5"
 	"github.com/rs/cors"
@@ -30,7 +29,6 @@ func main() {
 		host = "localhost"
 	}
 
-	loglvl.Init()
 	db.InitPool()
 	defer db.Pool.Close()
 
