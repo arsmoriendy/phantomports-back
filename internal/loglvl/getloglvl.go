@@ -86,4 +86,7 @@ CHECK_STR:
 
 func Init() {
 	LogLvl = Get()
+	if LogLvl >= INFO {
+		log.Printf("using log level: %s\n", lvlStr[LogLvl])
+	}
 }
