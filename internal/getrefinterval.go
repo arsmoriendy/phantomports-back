@@ -4,14 +4,11 @@ import (
 	"os"
 	"strconv"
 	"time"
-
-	"github.com/joho/godotenv"
 )
 
-var RefInterval = getRefInterval()
+var RefInterval time.Duration
 
 func getRefInterval() (ri time.Duration) {
-	godotenv.Load()
 	ri_env := os.Getenv("REFRESH_INTERVAL")
 	if ri_int, err := strconv.Atoi(ri_env); err != nil {
 		ri = time.Hour

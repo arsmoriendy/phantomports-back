@@ -28,4 +28,6 @@ func Init() {
 	if loglvl.LogLvl >= loglvl.INFO {
 		log.Printf("set front uuid lifetime to: %s", FrontUuidExpr)
 	}
+
+	RefInterval = getRefInterval()
 }
