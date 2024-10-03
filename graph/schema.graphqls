@@ -3,7 +3,7 @@
 # https://gqlgen.com/getting-started/
 
 type Query {
-  ports(portNumber: Int): [Port!]!
+  ports(portNumber: Int after: Int): [Port!]!
   lastChecked: Int!
   nextOpenPort(portNumber: Int!): Int
   prevOpenPort(portNumber: Int!): Int

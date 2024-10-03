@@ -64,13 +64,13 @@ type ComplexityRoot struct {
 	Query struct {
 		LastChecked  func(childComplexity int) int
 		NextOpenPort func(childComplexity int, portNumber int) int
-		Ports        func(childComplexity int, portNumber *int) int
+		Ports        func(childComplexity int, portNumber *int, after *int) int
 		PrevOpenPort func(childComplexity int, portNumber int) int
 	}
 }
 
 type QueryResolver interface {
-	Ports(ctx context.Context, portNumber *int) ([]*model.Port, error)
+	Ports(ctx context.Context, portNumber *int, after *int) ([]*model.Port, error)
 	LastChecked(ctx context.Context) (int, error)
 	NextOpenPort(ctx context.Context, portNumber int) (*int, error)
 	PrevOpenPort(ctx context.Context, portNumber int) (*int, error)
@@ -208,7 +208,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Ports(childComplexity, args["portNumber"].(*int)), true
+		return e.complexity.Query.Ports(childComplexity, args["portNumber"].(*int), args["after"].(*int)), true
 
 	case "Query.prevOpenPort":
 		if e.complexity.Query.PrevOpenPort == nil {
@@ -402,6 +402,11 @@ func (ec *executionContext) field_Query_ports_args(ctx context.Context, rawArgs 
 		return nil, err
 	}
 	args["portNumber"] = arg0
+	arg1, err := ec.field_Query_ports_argsAfter(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["after"] = arg1
 	return args, nil
 }
 func (ec *executionContext) field_Query_ports_argsPortNumber(
@@ -419,6 +424,28 @@ func (ec *executionContext) field_Query_ports_argsPortNumber(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("portNumber"))
 	if tmp, ok := rawArgs["portNumber"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_ports_argsAfter(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["after"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+	if tmp, ok := rawArgs["after"]; ok {
 		return ec.unmarshalOInt2ᚖint(ctx, tmp)
 	}
 
@@ -1039,7 +1066,7 @@ func (ec *executionContext) _Query_ports(ctx context.Context, field graphql.Coll
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Ports(rctx, fc.Args["portNumber"].(*int))
+		return ec.resolvers.Query().Ports(rctx, fc.Args["portNumber"].(*int), fc.Args["after"].(*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

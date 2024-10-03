@@ -6,13 +6,17 @@ package graph
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	"github.com/arsmoriendy/opor/gql-srv/graph/model"
 	"github.com/arsmoriendy/opor/gql-srv/internal"
 )
 
+var ErrPortsOutOfBounds = errors.New("indexing out of bounds for ports registry")
+
 // Ports is the resolver for the ports field.
-func (r *queryResolver) Ports(ctx context.Context, portNumber *int) ([]*model.Port, error) {
+func (r *queryResolver) Ports(ctx context.Context, portNumber *int, after *int) ([]*model.Port, error) {
 	rports := r.ports
 	if portNumber != nil {
 		rports = internal.Filter(rports, func(p *model.Port) bool {
@@ -25,7 +29,28 @@ func (r *queryResolver) Ports(ctx context.Context, portNumber *int) ([]*model.Po
 		})
 	}
 
-	return rports, nil
+	after_int := 0
+	if after != nil {
+		after_int = *after
+	}
+
+	n := len(rports)
+	first := 100 // max ports to search
+	from := after_int + 1
+	to := from + first
+
+	if from > n-1 {
+		return nil, fmt.Errorf(
+			"%w: tried to index(zero based) %v out of %v ports",
+			ErrPortsOutOfBounds, from, n,
+		)
+	}
+
+	if to > n {
+		return rports[from:], nil
+	}
+
+	return rports[from:to], nil
 }
 
 // LastChecked is the resolver for the lastChecked field.
