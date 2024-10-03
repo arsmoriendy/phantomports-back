@@ -30,3 +30,8 @@ The **username** field should be left blank. The **password** field should be a 
 
 > [!NOTE]
 > This repo was originally apart of [the archived monorepo](https://github.com/arsmoriendy/opor)
+
+## Regenerate From Schema
+```bash
+go run github.com/99designs/gqlgen generate
+```
