@@ -1,5 +1,5 @@
-# Opor Back
-Backend `graphql` server for opor written in `go`.
+# PhantomPorts back
+Backend `graphql` server for PhantomPorts.com written in `go`.
 
 ## Environment Variables
 Environment Variable | Description
