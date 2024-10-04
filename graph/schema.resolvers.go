@@ -27,6 +27,7 @@ func (r *queryResolver) Ports(ctx context.Context, portNumber *int, after *int) 
 			}
 			return false
 		})
+		return rports, nil
 	}
 
 	after_int := 0
