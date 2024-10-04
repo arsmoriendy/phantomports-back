@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY --exclude=.git . ./
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /opor-gql-srv
+RUN CGO_ENABLED=0 GOOS=linux go build -o /phantomports-back
 
 # Run the tests in the container
 FROM build-stage AS run-test-stage
@@ -18,7 +18,7 @@ FROM alpine:3.20.3 AS build-release-stage
 
 WORKDIR /
 
-COPY --from=build-stage /opor-gql-srv .
+COPY --from=build-stage /phantomports-back .
 COPY ./test ./test
 
-ENTRYPOINT ["/opor-gql-srv"]
+ENTRYPOINT ["/phantomports-back"]
