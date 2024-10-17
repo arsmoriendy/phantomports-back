@@ -114,7 +114,7 @@ func TestExpiredFrontUuid(t *testing.T) {
 	}
 
 	os.Setenv("FRONT_UUID_EXPR", "1")
-	internal.ResetFrontUuidExpr()
+	internal.ResetFrontUuidLifetime()
 
 	InitPool()
 	defer Pool.Close()
@@ -124,7 +124,7 @@ func TestExpiredFrontUuid(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	time.Sleep(internal.FrontUuidExpr)
+	time.Sleep(internal.FrontUuidLifetime)
 
 	valid, err := UuidValid(uuid)
 	if err != nil {

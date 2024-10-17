@@ -110,7 +110,7 @@ func RefreshFrontUuid(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// delete on expire (not guaranteed if process closes)
-	del_timer := time.NewTimer(internal.FrontUuidExpr)
+	del_timer := time.NewTimer(internal.FrontUuidLifetime)
 	go func() {
 		<-del_timer.C
 		err := db.RmUuid(uuid)

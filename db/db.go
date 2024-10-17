@@ -83,7 +83,7 @@ func NewUuid() (uuidStr string, err error) {
 func NewFrontUuid() (uuidStr string, err error) {
 	row := Pool.QueryRow(context.Background(),
 		"insert into uuids(expire_at) values($1) returning uuid",
-		time.Now().Add(internal.FrontUuidExpr))
+		time.Now().Add(internal.FrontUuidLifetime))
 
 	var uuid uuid.UUID
 	err = row.Scan(&uuid)

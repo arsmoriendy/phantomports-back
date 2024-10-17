@@ -6,9 +6,9 @@ import (
 	"time"
 )
 
-var FrontUuidExpr time.Duration
+var FrontUuidLifetime time.Duration
 
-func getFrontUuidExpr() (expr time.Duration) {
+func getFrontUuidLifetime() (expr time.Duration) {
 	expr_env := os.Getenv("FRONT_UUID_EXPR")
 	if expr_int, err := strconv.Atoi(expr_env); err != nil {
 		expr = time.Hour
@@ -18,6 +18,6 @@ func getFrontUuidExpr() (expr time.Duration) {
 	return
 }
 
-func ResetFrontUuidExpr() {
-	FrontUuidExpr = getFrontUuidExpr()
+func ResetFrontUuidLifetime() {
+	FrontUuidLifetime = getFrontUuidLifetime()
 }
