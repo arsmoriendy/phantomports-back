@@ -44,14 +44,17 @@ func Auth(next http.Handler) http.Handler {
 		if err != nil {
 			if err.Error()[:12] == "invalid UUID" {
 				w.WriteHeader(400)
+				w.Write([]byte("malformed UUID"))
 				return
 			}
 			if errors.Is(err, db.ErrExpiredUuid) {
 				w.WriteHeader(403)
+				w.Write([]byte("expired UUID"))
 				return
 			}
 			if errors.Is(err, db.ErrUnregisteredUuid) {
 				w.WriteHeader(403)
+				w.Write([]byte("unregistered UUID"))
 				return
 			}
 			w.WriteHeader(500)
