@@ -54,6 +54,7 @@ func TestUuidValid(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
+	internal.ResetFrontUuidLifetime()
 
 	InitPool()
 	defer Pool.Close()
@@ -83,6 +84,7 @@ func TestValidFrontUuid(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
+	internal.ResetFrontUuidLifetime()
 
 	InitPool()
 	defer Pool.Close()
