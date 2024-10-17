@@ -40,20 +40,24 @@ func Auth(next http.Handler) http.Handler {
 		}
 
 		// authorize uuid
-		exists, err := db.UuidValid(password)
+		err = db.UuidValid(password)
 		if err != nil {
 			if err.Error()[:12] == "invalid UUID" {
 				w.WriteHeader(400)
+				return
+			}
+			if errors.Is(err, db.ErrExpiredUuid) {
+				w.WriteHeader(403)
+				return
+			}
+			if errors.Is(err, db.ErrUnregisteredUuid) {
+				w.WriteHeader(403)
 				return
 			}
 			w.WriteHeader(500)
 			if loglvl.LogLvl >= loglvl.TRACE {
 				log.Println(err)
 			}
-			return
-		}
-		if !exists {
-			w.WriteHeader(403)
 			return
 		}
 

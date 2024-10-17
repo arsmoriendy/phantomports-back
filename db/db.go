@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -41,7 +42,10 @@ func InitPool() {
 	Pool = pool
 }
 
-func UuidValid(uuidStr string) (exists bool, err error) {
+var ErrUnregisteredUuid = errors.New("unregistered uuid")
+var ErrExpiredUuid = errors.New("Expired uuid")
+
+func UuidValid(uuidStr string) (err error) {
 	uuid_uuid, err := uuid.Parse(uuidStr)
 	if err != nil {
 		return
@@ -53,14 +57,14 @@ func UuidValid(uuidStr string) (exists bool, err error) {
 	err = row.Scan(&expire)
 	if err != nil {
 		if err.Error() == "no rows in result set" {
-			return false, nil
+			return fmt.Errorf("%w: %s", ErrUnregisteredUuid, uuidStr)
 		}
 		return
 	}
-	if expire != nil {
-		return expire.After(time.Now()), nil
+	if expire != nil && expire.Before(time.Now()) {
+		return fmt.Errorf("%w: %s", ErrExpiredUuid, uuidStr)
 	}
-	return true, nil
+	return
 }
 
 func NewUuid() (uuidStr string, err error) {

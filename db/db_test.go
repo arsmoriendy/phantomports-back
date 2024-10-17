@@ -1,6 +1,7 @@
 package db
 
 import (
+	"errors"
 	"os"
 	"testing"
 	"time"
@@ -64,13 +65,9 @@ func TestUuidValid(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	valid, err := UuidValid(uuid)
+	err = UuidValid(uuid)
 	if err != nil {
 		t.Fatal(err)
-	}
-
-	if !valid {
-		t.Fatal(valid)
 	}
 
 	err = RmUuid(uuid)
@@ -94,13 +91,9 @@ func TestValidFrontUuid(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	valid, err := UuidValid(uuid)
+	err = UuidValid(uuid)
 	if err != nil {
 		t.Fatal(err)
-	}
-
-	if !valid {
-		t.Fatal(valid)
 	}
 
 	err = RmUuid(uuid)
@@ -128,13 +121,12 @@ func TestExpiredFrontUuid(t *testing.T) {
 
 	time.Sleep(internal.FrontUuidLifetime)
 
-	valid, err := UuidValid(uuid)
-	if err != nil {
-		t.Fatal(err)
+	err = UuidValid(uuid)
+	if err == nil {
+		t.Fail()
 	}
-
-	if valid {
-		t.Fatal(valid)
+	if err != nil && !errors.Is(err, ErrExpiredUuid) {
+		t.Fatal(err)
 	}
 
 	err = RmUuid(uuid)
