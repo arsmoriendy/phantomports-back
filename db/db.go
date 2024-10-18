@@ -56,7 +56,8 @@ func UuidValid(uuidStr string) (err error) {
 	var expire *time.Time
 	err = row.Scan(&expire)
 	if err != nil {
-		if err.Error() == "no rows in result set" {
+		// TODO: use ErrNorows documented on row.Scan docs below.
+		if errors.Is(err, pgx.ErrNoRows) {
 			return fmt.Errorf("%w: %s", ErrUnregisteredUuid, uuidStr)
 		}
 		return
