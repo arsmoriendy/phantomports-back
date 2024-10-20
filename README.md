@@ -28,9 +28,6 @@ Authorization is done using [HTTP authentication](https://developer.mozilla.org/
 
 The **username** field should be left blank. The **password** field should be a valid **UUID** registered in the database.
 
-> [!NOTE]
-> This repo was originally apart of [the archived monorepo](https://github.com/arsmoriendy/opor)
-
 ## Regenerate From Schema
 ```bash
 go run github.com/99designs/gqlgen generate
