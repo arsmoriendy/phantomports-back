@@ -12,7 +12,7 @@ import (
 	"github.com/arsmoriendy/opor/gql-srv/csv"
 	"github.com/arsmoriendy/opor/gql-srv/graph/model"
 	"github.com/arsmoriendy/opor/gql-srv/internal"
-	"github.com/arsmoriendy/opor/gql-srv/internal/loglvl"
+	sll "github.com/arsmoriendy/sixlvllog"
 )
 
 // This file will not be regenerated automatically.
@@ -47,7 +47,7 @@ func (r *Resolver) refreshPorts(ri time.Duration) {
 		for {
 			<-ticker.C
 			ports, err = r.fillPorts()
-			if err != nil && loglvl.LogLvl >= loglvl.ERROR {
+			if err != nil && sll.LogLvl >= sll.ERROR {
 				log.Println(err)
 			}
 			r.ports = ports
@@ -71,13 +71,13 @@ func (r *Resolver) fillPorts() (ports []*model.Port, err error) {
 		if err != nil {
 			panic(err)
 		}
-		if loglvl.LogLvl >= loglvl.INFO {
+		if sll.LogLvl >= sll.INFO {
 			log.Println("using test/mock csv file")
 		}
 		rdr = c.NewReader(f)
 		body = f
 	} else {
-		if loglvl.LogLvl >= loglvl.INFO {
+		if sll.LogLvl >= sll.INFO {
 			log.Println("fetching csv...")
 		}
 		rdr, body, err = csv.FetchCsv()

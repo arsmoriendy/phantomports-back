@@ -12,7 +12,7 @@ import (
 
 	"github.com/arsmoriendy/opor/gql-srv/db"
 	"github.com/arsmoriendy/opor/gql-srv/internal"
-	"github.com/arsmoriendy/opor/gql-srv/internal/loglvl"
+	sll "github.com/arsmoriendy/sixlvllog"
 	"github.com/joho/godotenv"
 )
 
@@ -33,7 +33,7 @@ func Auth(next http.Handler) http.Handler {
 		_, password, err := parseBasicAuth(aHdr)
 		if err != nil {
 			w.WriteHeader(400)
-			if loglvl.LogLvl >= loglvl.TRACE {
+			if sll.LogLvl >= sll.TRACE {
 				log.Println(err)
 			}
 			return
@@ -58,7 +58,7 @@ func Auth(next http.Handler) http.Handler {
 				return
 			}
 			w.WriteHeader(500)
-			if loglvl.LogLvl >= loglvl.TRACE {
+			if sll.LogLvl >= sll.TRACE {
 				log.Println(err)
 			}
 			return
@@ -91,7 +91,7 @@ func RefreshFrontUuid(w http.ResponseWriter, r *http.Request) {
 	_, password, err := parseBasicAuth(aHdr)
 	if err != nil {
 		w.WriteHeader(400)
-		if loglvl.LogLvl >= loglvl.TRACE {
+		if sll.LogLvl >= sll.TRACE {
 			log.Println(err)
 		}
 		return
@@ -100,7 +100,7 @@ func RefreshFrontUuid(w http.ResponseWriter, r *http.Request) {
 	// authorize password
 	if password != refpass {
 		w.WriteHeader(403)
-		if loglvl.LogLvl >= loglvl.TRACE {
+		if sll.LogLvl >= sll.TRACE {
 			log.Println("invalid ref front uuid pass: " + password)
 		}
 		return
@@ -110,7 +110,7 @@ func RefreshFrontUuid(w http.ResponseWriter, r *http.Request) {
 	uuid, err := db.NewFrontUuid()
 	if err != nil {
 		w.WriteHeader(500)
-		if loglvl.LogLvl >= loglvl.ERROR {
+		if sll.LogLvl >= sll.ERROR {
 			log.Println("refresh handler: " + err.Error())
 		}
 		return
@@ -121,7 +121,7 @@ func RefreshFrontUuid(w http.ResponseWriter, r *http.Request) {
 	go func() {
 		<-del_timer.C
 		err := db.RmUuid(uuid)
-		if err != nil && loglvl.LogLvl >= loglvl.ERROR {
+		if err != nil && sll.LogLvl >= sll.ERROR {
 			log.Println(err)
 		}
 	}()

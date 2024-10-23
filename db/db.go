@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/arsmoriendy/opor/gql-srv/internal"
-	"github.com/arsmoriendy/opor/gql-srv/internal/loglvl"
+	sll "github.com/arsmoriendy/sixlvllog"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -35,7 +35,7 @@ func InitPool() {
 		pool.Close()
 		panic(fmt.Errorf("unable to create connection pool: %w", err))
 	}
-	if loglvl.LogLvl >= loglvl.INFO {
+	if sll.LogLvl >= sll.INFO {
 		log.Printf("connected to database")
 	}
 

@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/arsmoriendy/opor/gql-srv/internal/loglvl"
+	sll "github.com/arsmoriendy/sixlvllog"
 	"github.com/joho/godotenv"
 )
 
@@ -22,15 +22,15 @@ func Init() {
 		panic(err)
 	}
 
-	loglvl.Init()
+	sll.Init()
 
 	FrontUuidLifetime = getFrontUuidLifetime()
-	if loglvl.LogLvl >= loglvl.INFO {
+	if sll.LogLvl >= sll.INFO {
 		log.Printf("set front uuid lifetime to: %s", FrontUuidLifetime)
 	}
 
 	RefInterval = getRefInterval()
-	if loglvl.LogLvl >= loglvl.INFO {
+	if sll.LogLvl >= sll.INFO {
 		log.Printf("refreshing ports every %s", RefInterval)
 	}
 }
