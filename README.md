@@ -26,7 +26,7 @@ Verbosity | Level (Case Insensitive)
 ## Authorization
 Authorization is done using [HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication) with the `Basic` scheme.
 
-The **username** field should be left blank. The **password** field should be a valid **UUID** registered in the database.
+The **username** field SHOULD be left blank. The **password** field should be a valid **UUID** registered in the database.
 
 ## Regenerate From Schema
 ```bash
