@@ -1,5 +1,5 @@
 # PhantomPorts back
-Backend `graphql` server for PhantomPorts.com written in `go`.
+Backend `graphql` server for https://api.phantomports.com written in `go`.
 
 ## Environment Variables
 Environment Variable | Description
