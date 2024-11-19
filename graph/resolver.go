@@ -56,6 +56,8 @@ func (r *Resolver) refreshPorts(ri time.Duration) {
 	}()
 }
 
+var ErrEmptyPortCsv = errors.New("empty ports csv")
+
 // Fills `ports` field
 func (r *Resolver) fillPorts() (ports []*model.Port, err error) {
 	// TODO: test this function
@@ -89,6 +91,7 @@ func (r *Resolver) fillPorts() (ports []*model.Port, err error) {
 	}
 	defer body.Close()
 
+	portCount := 0
 	rdr.Read() // skip header
 	for {
 		var rec []string
@@ -122,8 +125,14 @@ func (r *Resolver) fillPorts() (ports []*model.Port, err error) {
 			UnauthorizedUseReported: &rec[10],
 			AssignmentNotes:         &rec[11],
 		})
-
+		portCount++
 	}
+
+	// check port cout
+	if portCount == 0 {
+		return ports, ErrEmptyPortCsv
+	}
+
 	return ports, nil
 }
 
