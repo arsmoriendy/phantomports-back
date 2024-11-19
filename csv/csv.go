@@ -4,12 +4,15 @@ package csv
 import (
 	"encoding/csv"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 var ErrInvalidStatusCode = errors.New("csv: invalid response status code (not 200 OK)")
+var ErrInvalidContentType = errors.New("csv: invalid response content type")
 
 func FetchCsv() (*csv.Reader, io.ReadCloser, error) {
 	res, err := http.Get("https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.csv")
@@ -17,9 +20,29 @@ func FetchCsv() (*csv.Reader, io.ReadCloser, error) {
 		return nil, nil, err
 	}
 
+	// check status code
 	if res.StatusCode != http.StatusOK {
 		res.Body.Close()
 		return nil, nil, ErrInvalidStatusCode
+	}
+
+	// check content type
+	contentType := res.Header.Get("Content-Type")
+	contentTypeSlices := strings.Split(contentType, ";")
+	found := false
+	for _, s := range contentTypeSlices {
+		trimmed := strings.Trim(s, " ")
+		if trimmed == "text/csv" {
+			found = true
+			break
+		}
+	}
+	if !found {
+		return nil, nil, fmt.Errorf(
+			"%w: found '%s', expected 'text/csv'",
+			ErrInvalidContentType,
+			contentType,
+		)
 	}
 
 	return csv.NewReader(res.Body), res.Body, nil
