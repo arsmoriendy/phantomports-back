@@ -1,9 +1,15 @@
+stages:
+    - testing
+    - build-push-image
+
 test:
+    stage: testing
     image: golang:1.22
     script:
         - "go test ./..."
 
 build-push-image:
+    stage: build-push-image
     image: docker:25.0.5
     rules:
         - if: $CI_COMMIT_BRANCH == "master"
