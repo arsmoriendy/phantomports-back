@@ -47,8 +47,11 @@ func (r *Resolver) refreshPorts(ri time.Duration) {
 		for {
 			<-ticker.C
 			ports, err = r.fillPorts()
-			if err != nil && sll.LogLvl >= sll.ERROR {
-				log.Println(err)
+			if err != nil {
+				if sll.LogLvl >= sll.ERROR {
+					log.Println(err)
+				}
+				return
 			}
 			r.ports = ports
 			r.lastChecked = time.Now()
