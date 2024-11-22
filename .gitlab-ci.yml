@@ -6,7 +6,7 @@ test:
     stage: testing
     image: golang:1.22
     script:
-        - "go test internal"
+        - "go test ./internal"
 
 build-push-image:
     stage: build-push-image
