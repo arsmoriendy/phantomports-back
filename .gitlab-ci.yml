@@ -11,6 +11,8 @@ test:
 build-push-image:
     stage: build-push-image
     image: docker:25.0.5
+    services:
+        - docker:25.0.5-dind
     rules:
         - if: $CI_COMMIT_BRANCH == "master"
     script:
