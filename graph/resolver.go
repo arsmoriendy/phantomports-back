@@ -35,25 +35,23 @@ func New() *Resolver {
 // If initial call to `fillPorts` fail, panic. Otherwise, log the error and move on.
 func (r *Resolver) refreshPorts(ri time.Duration) {
 	// initial call
-	ports, err := r.fillPorts()
+	err := r.fillPorts()
 	if err != nil {
 		panic(err)
 	}
-	r.ports = ports
 	r.lastChecked = time.Now()
 
 	ticker := time.NewTicker(ri)
 	go func() {
 		for {
 			<-ticker.C
-			ports, err = r.fillPorts()
+			err = r.fillPorts()
 			if err != nil {
 				if sll.LogLvl >= sll.ERROR {
 					log.Println(err)
 				}
 				return
 			}
-			r.ports = ports
 			r.lastChecked = time.Now()
 		}
 	}()
@@ -62,8 +60,10 @@ func (r *Resolver) refreshPorts(ri time.Duration) {
 var ErrEmptyPortCsv = errors.New("empty ports csv")
 
 // Fills `ports` field
-func (r *Resolver) fillPorts() (ports []*model.Port, err error) {
+func (r *Resolver) fillPorts() (err error) {
 	// TODO: test this function
+
+	ports := []*model.Port{}
 
 	var rdr *c.Reader
 	var body io.ReadCloser
@@ -133,10 +133,12 @@ func (r *Resolver) fillPorts() (ports []*model.Port, err error) {
 
 	// check port cout
 	if portCount == 0 {
-		return ports, ErrEmptyPortCsv
+		return ErrEmptyPortCsv
 	}
 
-	return ports, nil
+	r.ports = ports
+
+	return nil
 }
 
 func (r *Resolver) SearchPort(toFind *model.Port) (bool, uint, error) {
