@@ -88,7 +88,7 @@ func makePorts() (rdr *c.Reader, body io.ReadCloser, err error) {
 
 var ErrEmptyPortCsv = errors.New("empty ports csv")
 
-// Fills `ports` field
+// Checks, parses and fills `r.ports`
 func (r *Resolver) fillPorts(rdr *c.Reader) (err error) {
 	// TODO: test this function
 
