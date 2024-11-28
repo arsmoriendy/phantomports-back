@@ -35,7 +35,9 @@ func New() *Resolver {
 // If initial call to `fillPorts` fail, panic. Otherwise, log the error and move on.
 func (r *Resolver) refreshPorts(ri time.Duration) {
 	// initial call
-	err := r.fillPorts()
+	rdr, body, err := makePorts()
+	defer body.Close()
+	err = r.fillPorts(rdr)
 	if err != nil {
 		panic(err)
 	}
@@ -45,7 +47,9 @@ func (r *Resolver) refreshPorts(ri time.Duration) {
 	go func() {
 		for {
 			<-ticker.C
-			err = r.fillPorts()
+			rdr, body, err = makePorts()
+			err = r.fillPorts(rdr)
+			defer body.Close()
 			if err != nil {
 				if sll.LogLvl >= sll.ERROR {
 					log.Println(err)
@@ -57,17 +61,7 @@ func (r *Resolver) refreshPorts(ri time.Duration) {
 	}()
 }
 
-var ErrEmptyPortCsv = errors.New("empty ports csv")
-
-// Fills `ports` field
-func (r *Resolver) fillPorts() (err error) {
-	// TODO: test this function
-
-	ports := []*model.Port{}
-
-	var rdr *c.Reader
-	var body io.ReadCloser
-
+func makePorts() (rdr *c.Reader, body io.ReadCloser, err error) {
 	if internal.IsDevMode() {
 		f, err := os.Open("test/data/service-names-port-numbers.csv")
 		if errors.Is(err, os.ErrNotExist) {
@@ -89,10 +83,16 @@ func (r *Resolver) fillPorts() (err error) {
 	}
 	// TODO: log done fetching/using mock
 
-	if err != nil {
-		return
-	}
-	defer body.Close()
+	return
+}
+
+var ErrEmptyPortCsv = errors.New("empty ports csv")
+
+// Fills `ports` field
+func (r *Resolver) fillPorts(rdr *c.Reader) (err error) {
+	// TODO: test this function
+
+	ports := []*model.Port{}
 
 	portCount := 0
 	rdr.Read() // skip header
@@ -102,7 +102,6 @@ func (r *Resolver) fillPorts() (err error) {
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			body.Close()
 			return
 		}
 
@@ -111,7 +110,6 @@ func (r *Resolver) fillPorts() (err error) {
 		var recpnum []int
 		recpnum, err = csv.ParsePort(rec[1])
 		if err != nil {
-			body.Close()
 			return
 		}
 		ports = append(ports, &model.Port{
