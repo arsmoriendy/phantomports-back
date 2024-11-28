@@ -90,8 +90,6 @@ var ErrEmptyPortCsv = errors.New("empty ports csv")
 
 // Checks, parses and fills `r.ports`
 func (r *Resolver) fillPorts(rdr *c.Reader) (err error) {
-	// TODO: test this function
-
 	ports := []*model.Port{}
 
 	portCount := 0
