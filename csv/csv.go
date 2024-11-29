@@ -17,13 +17,23 @@ var ErrInvalidContentType = errors.New("csv: invalid response content type")
 func FetchCsv() (*csv.Reader, io.ReadCloser, error) {
 	res, err := http.Get("https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.csv")
 	if err != nil {
+		res.Body.Close()
 		return nil, nil, err
 	}
 
+	err = validateRes(res)
+	if err != nil {
+		res.Body.Close()
+		return nil, nil, err
+	}
+
+	return csv.NewReader(res.Body), res.Body, nil
+}
+
+func validateRes(res *http.Response) (err error) {
 	// check status code
 	if res.StatusCode != http.StatusOK {
-		res.Body.Close()
-		return nil, nil, ErrInvalidStatusCode
+		return ErrInvalidStatusCode
 	}
 
 	// check content type
@@ -38,14 +48,14 @@ func FetchCsv() (*csv.Reader, io.ReadCloser, error) {
 		}
 	}
 	if !found {
-		return nil, nil, fmt.Errorf(
+		return fmt.Errorf(
 			"%w: found '%s', expected 'text/csv'",
 			ErrInvalidContentType,
 			contentType,
 		)
 	}
 
-	return csv.NewReader(res.Body), res.Body, nil
+	return
 }
 
 // Wrapper for determining if a port field is:
