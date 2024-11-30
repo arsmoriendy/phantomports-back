@@ -17,9 +17,8 @@ var ErrInvalidStatusCode = errors.New("csv: invalid response status code (not 20
 var ErrInvalidContentType = errors.New("csv: invalid response content type")
 
 func FetchCsv() (*csv.Reader, io.ReadCloser, error) {
-	res, err := http.Get(internal.IANAregUrl)
+	res, err := getCsv()
 	if err != nil {
-		res.Body.Close()
 		return nil, nil, err
 	}
 
@@ -30,6 +29,14 @@ func FetchCsv() (*csv.Reader, io.ReadCloser, error) {
 	}
 
 	return csv.NewReader(res.Body), res.Body, nil
+}
+
+func getCsv() (res *http.Response, err error) {
+	res, err = http.Get(internal.IANAregUrl)
+	if err != nil {
+		res.Body.Close()
+	}
+	return
 }
 
 func validateRes(res *http.Response) (err error) {
