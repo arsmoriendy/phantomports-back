@@ -32,11 +32,7 @@ func FetchCsv() (*csv.Reader, io.ReadCloser, error) {
 }
 
 func getCsv() (res *http.Response, err error) {
-	res, err = http.Get(internal.IANAregUrl)
-	if err != nil {
-		res.Body.Close()
-	}
-	return
+	return http.Get(internal.IANAregUrl)
 }
 
 func validateRes(res *http.Response) (err error) {
