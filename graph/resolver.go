@@ -56,7 +56,7 @@ func (r *Resolver) refreshPorts(ri time.Duration) {
 				if sll.LogLvl >= sll.ERROR {
 					log.Println(err)
 				}
-				return
+				continue
 			}
 			defer body.Close()
 			err = r.fillPorts(rdr)
@@ -64,7 +64,7 @@ func (r *Resolver) refreshPorts(ri time.Duration) {
 				if sll.LogLvl >= sll.ERROR {
 					log.Println(err)
 				}
-				return
+				continue
 			}
 			r.lastChecked = time.Now()
 		}
