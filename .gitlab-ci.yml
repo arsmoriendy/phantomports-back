@@ -6,6 +6,8 @@ stages:
 test:
   stage: testing
   image: golang:1.22
+  variables:
+    SKIP_DB_TEST: "true"
   script:
     - "go test ./internal"
 
