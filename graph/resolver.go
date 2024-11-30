@@ -52,8 +52,14 @@ func (r *Resolver) refreshPorts(ri time.Duration) {
 		for {
 			<-ticker.C
 			rdr, body, err = makePorts()
-			err = r.fillPorts(rdr)
+			if err != nil {
+				if sll.LogLvl >= sll.ERROR {
+					log.Println(err)
+				}
+				return
+			}
 			defer body.Close()
+			err = r.fillPorts(rdr)
 			if err != nil {
 				if sll.LogLvl >= sll.ERROR {
 					log.Println(err)
