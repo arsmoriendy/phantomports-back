@@ -11,6 +11,15 @@ import (
 	"github.com/joho/godotenv"
 )
 
+func TestMain(m *testing.M) {
+	if _, found := os.LookupEnv("SKIP_DB_TEST"); found {
+		os.Exit(0)
+	}
+
+	code := m.Run()
+	os.Exit(code)
+}
+
 func TestNewUuid(t *testing.T) {
 	err := godotenv.Load("../.env")
 	if err != nil {
