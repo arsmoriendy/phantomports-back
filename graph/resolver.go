@@ -91,7 +91,7 @@ func makePorts() (rdr *c.Reader, body io.ReadCloser, err error) {
 		}
 		rdr, body, err = csv.FetchCsv()
 	}
-	if sll.LogLvl >= sll.INFO {
+	if err == nil && sll.LogLvl >= sll.INFO {
 		log.Println("done fetching csv")
 	}
 
