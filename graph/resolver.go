@@ -85,7 +85,9 @@ func makePorts() (rdr *c.Reader, body io.ReadCloser, err error) {
 		}
 		rdr, body, err = csv.FetchCsv()
 	}
-	// TODO: log done fetching/using mock
+	if sll.LogLvl >= sll.INFO {
+		log.Println("done fetching csv")
+	}
 
 	return
 }
