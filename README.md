@@ -14,6 +14,7 @@ Backend `graphql` server for https://api.phantomports.com written in `go`.
 | `REFRESH_INTERVAL`    | Interval to refresh ports from IANA's registry in milliseconds. Defaults to an hour                               |
 | `FRONT_UUID_EXPR`     | Expiration time for frontend uuid in milliseconds. Defaults to an hour                                            |
 | `REF_FRONT_UUID_PASS` | Password to refresh frontend uuid                                                                                 |
+| `IANA_REG_URL`        | Defaults to https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.csv            |
 
 ## Log Levels
 
