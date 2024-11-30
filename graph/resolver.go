@@ -36,7 +36,11 @@ func New() *Resolver {
 func (r *Resolver) refreshPorts(ri time.Duration) {
 	// initial call
 	rdr, body, err := makePorts()
+	if err != nil {
+		panic(err)
+	}
 	defer body.Close()
+
 	err = r.fillPorts(rdr)
 	if err != nil {
 		panic(err)
