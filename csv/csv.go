@@ -9,13 +9,15 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/arsmoriendy/opor/gql-srv/internal"
 )
 
 var ErrInvalidStatusCode = errors.New("csv: invalid response status code (not 200 OK)")
 var ErrInvalidContentType = errors.New("csv: invalid response content type")
 
 func FetchCsv() (*csv.Reader, io.ReadCloser, error) {
-	res, err := http.Get("https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.csv")
+	res, err := http.Get(internal.IANAregUrl)
 	if err != nil {
 		res.Body.Close()
 		return nil, nil, err

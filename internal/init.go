@@ -33,4 +33,9 @@ func Init() {
 	if sll.LogLvl >= sll.INFO {
 		log.Printf("refreshing ports every %s", RefInterval)
 	}
+
+	IANAregUrl = getIANAregUrl()
+	if sll.LogLvl >= sll.INFO {
+		log.Printf("using %s as port registry", IANAregUrl)
+	}
 }
