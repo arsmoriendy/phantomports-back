@@ -15,6 +15,7 @@ Backend `graphql` server for https://api.phantomports.com written in `go`.
 | `FRONT_UUID_EXPR`     | Expiration time for frontend uuid in milliseconds. Defaults to an hour                                            |
 | `REF_FRONT_UUID_PASS` | Password to refresh frontend uuid                                                                                 |
 | `IANA_REG_URL`        | Defaults to https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.csv            |
+| `SKIP_DB_TEST`        | Skips database related testing, useful for CI environments                                                        |
 
 ## Log Levels
 
