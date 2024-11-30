@@ -9,7 +9,7 @@ test:
   variables:
     SKIP_DB_TEST: "true"
   script:
-    - "go test ./internal"
+    - "go test ./..."
 
 build-push-image:
   stage: build-push-image
