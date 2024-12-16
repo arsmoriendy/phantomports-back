@@ -30,14 +30,14 @@ func (r *queryResolver) Ports(ctx context.Context, portNumber *int, after *int) 
 		return rports, nil
 	}
 
-	after_int := 0
-	if after != nil {
-		after_int = *after
+	if after == nil {
+		after_int := 0
+		after = &after_int
 	}
 
 	n := len(rports)
 	first := 100 // max ports to search
-	from := after_int + 1
+	from := *after + 1
 	to := from + first
 
 	if from > n-1 {
